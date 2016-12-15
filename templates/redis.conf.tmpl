@@ -1,0 +1,9 @@
+bind {{host}}
+databases {{databaeses}}
+loglevel {{log_level}}
+port {{port}}
+{%- if password is defined %}
+requirepass {{password}}
+{%- endif %}
+tcp-keepalive {{tcp_keepalive}}
+timeout {{timeout}}
