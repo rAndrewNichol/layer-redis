@@ -1,0 +1,8 @@
+includes:
+  - 'layer:basic'
+  - 'interface:redis'
+options:
+  basic:
+    packages:
+      - redis-server
+repo: "https://github.com:jamesbeedy/juju-charm-redis"

@@ -1,0 +1,12 @@
+options:
+  port:
+    type: int
+    default: 6379
+    description: |
+      Accept connections on the specified port.
+  password:
+    type: string
+    default: "password"
+    description: |
+      Require clients to issue AUTH <PASSWORD> before processing any other
+      commands.
