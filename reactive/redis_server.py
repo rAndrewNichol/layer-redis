@@ -35,10 +35,10 @@ def config_redis():
           'tcp_keepalive': config('tcp-keepalive'),
           'timeout': config('timeout')}
 
-    if len(config('password') > 1:
+    if len(config('password')) > 1:
         ctxt['password'] = config('password')
 
-    render_conf(CHARM_REDIS_CONF, 'redis.conf.tmpl' ctxt=ctxt)
+    render_conf(CHARM_REDIS_CONF, 'redis.conf.tmpl', ctxt=ctxt)
 
     with open(DEFAULT_REDIS_CONF, 'a') as conf_file:
         conf_file.write('include {}\n'.format(CHARM_REDIS_CONF))
