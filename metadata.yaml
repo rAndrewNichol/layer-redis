@@ -14,6 +14,8 @@ tags:
   - db
   - misc
 subordinate: false
+series:
+- xenial
 provides:
   redis:
     interface: redis
