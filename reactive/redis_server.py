@@ -1,3 +1,4 @@
+import os
 from charms.reactive import when, when_not, set_state
 from charmhelpers.core.hookenv import (
     unit_private_ip,
