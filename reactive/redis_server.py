@@ -57,5 +57,8 @@ def config_redis():
 @when('redis.available', 'redis.ready')
 @when_not('redis.data.set')
 def set_relational_data(redis):
-    redis.provide_data(port=config('port'), password=config('password'))
+    if config('password'):
+        redis.provide_data(port=config('port'), password=config('password'))
+    else:
+        redis.provide_data(port=config('port'))
     set_state('redis.data.set')
