@@ -6,7 +6,7 @@ options:
       Accept connections on the specified port.
   password:
     type: string
-    default: "password"
+    default: ""
     description: |
       Require clients to issue AUTH <PASSWORD> before processing any other
       commands.
