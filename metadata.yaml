@@ -16,6 +16,7 @@ tags:
 subordinate: false
 series:
 - xenial
+- trusty
 provides:
   redis:
     interface: redis
