@@ -8,11 +8,9 @@ description: |
   and sets.  The dataset is stored entirely in memory and periodically
   flushed to disk.
 tags:
-  # Replace "misc" with one or more whitelisted tags from this list:
-  # https://jujucharms.com/docs/stable/authors-charm-metadata
   - cache
   - db
-  - misc
+  - redis
 subordinate: false
 series:
 - yakkety

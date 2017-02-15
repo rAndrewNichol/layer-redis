@@ -1,12 +1,13 @@
 import os
+from subprocess import call
 from charms.reactive import when, when_not, set_state
 from charmhelpers.core.hookenv import (
+    application_version_set,
     unit_private_ip,
     status_set,
     config,
     open_port
 )
-from charmhelpers.core.templating import render
 
 from charmhelpers.core.host import (
     service_restart,
@@ -14,17 +15,18 @@ from charmhelpers.core.host import (
     service_start,
 )
 
+from charms.layer.redis import(
+    render_conf,
+    get_redis_version,
+    DEFAULT_REDIS_CONF,
+    CHARM_REDIS_CONF
+)
 
-DEFAULT_REDIS_CONF = os.path.join('/', 'etc', 'redis', 'redis.conf')
-CHARM_REDIS_CONF = os.path.join('/', 'etc', 'redis', 'redis-charm.conf')
 
-
-def render_conf(cfg_path, cfg_tmpl, owner='root',
-                group='root', ctxt={}, perms=0o644):
-    if os.path.exists(cfg_path):
-        os.remove(cfg_path)
-    render(source=cfg_tmpl, target=cfg_path, owner=owner,
-           group=group, perms=perms, context=ctxt)
+@when_not('redis.auto.start.configured')
+def configure_autostart():
+    call("systemctl enable redis-server.service".split())
+    set_state('redis.auto.start.configured')
 
 
 @when_not('redis.ready')
@@ -54,7 +56,19 @@ def config_redis():
     set_state('redis.ready')
 
 
-@when('redis.connected', 'redis.ready')
+@when('redis.ready')
+@when_not('redis.version.set')
+def set_redis_version():
+    """Set redis version
+    """
+    version = get_redis_version('redis-server')
+    if version:
+        application_version_set(version)
+        set_state('redis.version.set')
+    else:
+        status_set('blocked', "Cannot get redis-server version")
+
+@when('redis.connected', 'redis.ready', 'redis.version.set')
 @when_not('redis.data.set', 'redis.configured')
 def set_relational_data(redis):
     if config('password'):
