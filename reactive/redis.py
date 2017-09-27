@@ -69,10 +69,8 @@ def set_redis_version():
         status_set('blocked', "Cannot get redis-server version")
 
 @when('redis.connected', 'redis.ready', 'redis.version.set')
-@when_not('redis.data.set', 'redis.configured')
 def set_relational_data(redis):
     if config('password'):
         redis.configure(port=config('port'), password=config('password'))
     else:
         redis.configure(port=config('port'))
-    set_state('redis.data.set')
