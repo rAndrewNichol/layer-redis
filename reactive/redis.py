@@ -38,7 +38,7 @@ PRIVATE_IP = network_get('redis')['ingress-addresses'][0]
 def configure_system_for_redis():
     with open('/etc/sysctl.conf', 'a') as f:
         f.write("\nvm.overcommit_memory = 1")
-    os.call('sysctl vm.overcommit_memory=1'.split())
+    call('sysctl vm.overcommit_memory=1'.split())
 
     with open('/sys/kernel/mm/transparent_hugepage/enabled', 'w') as f:
         f.write('never')
