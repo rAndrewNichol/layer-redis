@@ -1,7 +1,7 @@
 from subprocess import call
 
 from charms.reactive import (
-    context,
+    relations,
     clear_flag,
     set_flag,
     when,
@@ -91,8 +91,9 @@ def set_redis_version():
 # Client Relation
 @when('endpoint.redis.joined')
 def provide_client_relation_data():
+    endpoint = relations.endpoint_from_flag('redis')
     ctxt = {'host': PRIVATE_IP, 'port': config('port')}
     if config('password'):
         ctxt['password'] = config('password')
-    context.endpoints.redis.configure(**ctxt)
+    endpoint.configure(**ctxt)
     clear_flag('endpoint.redis.joined')
