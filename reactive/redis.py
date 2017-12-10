@@ -1,9 +1,9 @@
 from subprocess import call
 
 from charms.reactive import (
-    relations,
-    clear_flag,
+    endpoint_from_flag,
     set_flag,
+    register_trigger,
     when,
     when_not,
 )
@@ -28,10 +28,12 @@ from charms.layer.redis import (
     REDIS_CONF,
     REDIS_SERVICE
 )
- 
-
 
 PRIVATE_IP = network_get('redis')['ingress-addresses'][0]
+
+
+register_trigger(when='redis.broken',
+                 clear_flag='redis.relation.data.available')
 
 
 @when_not('redis.system.configured')
@@ -87,13 +89,13 @@ def set_redis_version():
         status_set('blocked', "Cannot get redis-server version")
 
 
-
 # Client Relation
 @when('endpoint.redis.joined')
+@when_not('juju.redis.available')
 def provide_client_relation_data():
-    endpoint = relations.endpoint_from_flag('redis')
+    endpoint = endpoint_from_flag('redis.available')
     ctxt = {'host': PRIVATE_IP, 'port': config('port')}
     if config('password'):
         ctxt['password'] = config('password')
     endpoint.configure(**ctxt)
-    clear_flag('endpoint.redis.joined')
+    set_flag('juju.redis.available')
