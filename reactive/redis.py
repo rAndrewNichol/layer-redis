@@ -32,10 +32,6 @@ from charms.layer.redis import (
 PRIVATE_IP = network_get('redis')['ingress-addresses'][0]
 
 
-register_trigger(when='redis.broken',
-                 clear_flag='redis.relation.data.available')
-
-
 @when_not('redis.system.configured')
 def configure_system_for_redis():
     with open('/etc/sysctl.conf', 'a') as f:
@@ -93,9 +89,11 @@ def set_redis_version():
 @when('endpoint.redis.joined')
 @when_not('juju.redis.available')
 def provide_client_relation_data():
-    endpoint = endpoint_from_flag('redis.available')
+    status_set('maintenance', "Providing Redis endpoint")
+    endpoint = endpoint_from_flag('endpoint.redis.joined')
     ctxt = {'host': PRIVATE_IP, 'port': config('port')}
     if config('password'):
         ctxt['password'] = config('password')
     endpoint.configure(**ctxt)
+    status_set('active', "Endpoint: endpoint.redis.joined available")
     set_flag('juju.redis.available')
