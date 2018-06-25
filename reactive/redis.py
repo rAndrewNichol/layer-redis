@@ -1,8 +1,8 @@
 from subprocess import call
 
 from charms.reactive import (
-    context,
     clear_flag,
+    endpoint_from_flag,
     set_flag,
     when,
     when_not,
@@ -50,7 +50,8 @@ def configure_system_for_redis():
 
 
 @when_not('redis.ready')
-@when('snap.installed.redis-bdx', 'redis.system.configured')
+@when('snap.installed.redis-bdx',
+      'redis.system.configured')
 def config_redis():
     ctxt = {'host': PRIVATE_IP,
             'port': config('port'),
@@ -85,14 +86,14 @@ def set_redis_version():
         set_flag('redis.version.set')
     else:
         status_set('blocked', "Cannot get redis-server version")
-
-
+        return
 
 # Client Relation
 @when('endpoint.redis.joined')
 def provide_client_relation_data():
+    endpoint = endpoint_from_flag('endpoint.redis.joined')
     ctxt = {'host': PRIVATE_IP, 'port': config('port')}
     if config('password'):
         ctxt['password'] = config('password')
-    context.endpoints.redis.configure(**ctxt)
+    endpoint.redis.configure(**ctxt)
     clear_flag('endpoint.redis.joined')

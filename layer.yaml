@@ -12,4 +12,4 @@ options:
       dangerous: true
       classic: true
       revision: null
-repo: "https://github.com:jamesbeedy/layer-redis"
+repo: "https://github.com:omnivector-solutions/layer-redis"

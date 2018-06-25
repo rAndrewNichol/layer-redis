@@ -14,9 +14,7 @@ tags:
 subordinate: false
 series:
 - xenial
-- trusty
-- zesty
-- artful
+- bionic
 provides:
   redis:
     interface: redis
