@@ -95,5 +95,5 @@ def provide_client_relation_data():
     ctxt = {'host': PRIVATE_IP, 'port': config('port')}
     if config('password'):
         ctxt['password'] = config('password')
-    endpoint.redis.configure(**ctxt)
+    endpoint.configure(**ctxt)
     clear_flag('endpoint.redis.joined')
