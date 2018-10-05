@@ -1,6 +1,7 @@
 includes:
   - 'layer:basic'
   - 'layer:metrics'
+  - 'layer:nagios'
   - 'layer:snap'
   - 'interface:redis'
 options:
@@ -10,6 +11,6 @@ options:
       devmode: false
       jailmode: false
       dangerous: true
-      classic: true
+      classic: false
       revision: null
 repo: "https://github.com:omnivector-solutions/layer-redis"
