@@ -36,16 +36,3 @@ def get_redis_version():
     for item in redis_version_out.split():
         if "v=" in item:
             return item.split("=")[1]
-
-
-# shamelessly stolen from 
-# https://stackoverflow.com/a/2130035
-def redis_slots_chunks(num):
-    seq = list(range(0, 16383))
-    avg = len(seq) / float(num)
-    out = []
-    last = 0.0
-    while last < len(seq):
-        out.append(seq[int(last):int(last + avg)])
-        last += avg
-    return out
