@@ -39,3 +39,8 @@ options:
       Set the number of databases. The default database is DB 0. You can select
       a different one on a per-connection basis using SELECT <dbid> where dbid
       is a number between 0 and 'databases'-1.
+  cluster-enabled:
+    type: boolean
+    default: false
+    description: |
+      Enable or disable redis-cluster. This config can only be set pre-deploy.

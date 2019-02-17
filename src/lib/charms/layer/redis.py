@@ -5,12 +5,18 @@ from charmhelpers.core.templating import render
 
 REDIS_SERVICE = 'snap.redis-bdx.redis-server'
 
-REDIS_CONF = \
-    os.path.join('/', 'var', 'snap', 'redis-bdx',
-                 'common', 'etc', 'redis', 'redis.conf')
+REDIS_SNAP_COMMON = os.path.join('/', 'var', 'snap', 'redis-bdx', 'common')
+
+REDIS_CONF = os.path.join(REDIS_SNAP_COMMON, 'etc', 'redis', 'redis.conf')
+
+REDIS_DIR = os.path.join(REDIS_SNAP_COMMON, 'var', 'lib', 'redis')
+
+REDIS_CLUSTER_CONF = os.path.join(REDIS_DIR, 'nodes.conf')
 
 REDIS_BIN = \
     os.path.join('/', 'snap', 'redis-bdx', 'current', 'bin', 'redis-server')
+
+REDIS_CLI = os.path.join('/', 'snap', 'bin', 'redis-bdx.redis-cli')
 
 
 def render_conf(cfg_path, cfg_tmpl, owner='root',
@@ -30,3 +36,16 @@ def get_redis_version():
     for item in redis_version_out.split():
         if "v=" in item:
             return item.split("=")[1]
+
+
+# shamelessly stolen from 
+# https://stackoverflow.com/a/2130035
+def redis_slots_chunks(num):
+    seq = list(range(0, 16383))
+    avg = len(seq) / float(num)
+    out = []
+    last = 0.0
+    while last < len(seq):
+        out.append(seq[int(last):int(last + avg)])
+        last += avg
+    return out

@@ -1,8 +1,10 @@
 includes:
   - 'layer:basic'
+  - 'layer:status'
   - 'layer:metrics'
   - 'layer:nagios'
   - 'layer:snap'
+  - 'layer:leadership'
   - 'interface:redis'
 options:
   snap:

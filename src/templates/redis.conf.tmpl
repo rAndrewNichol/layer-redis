@@ -1,9 +1,20 @@
-bind {{host}}
-databases {{databases}}
-loglevel {{log_level}}
-port {{port}}
+{%- if cluster_conf is defined %}
+appendonly yes
+cluster-enabled yes
+cluster-config-file {{cluster_conf}}
+cluster-node-timeout 5000
+{%- endif %}
+
 {%- if password is defined %}
 requirepass {{password}}
 {%- endif %}
+
+bind 0.0.0.0
+databases {{databases}}
+loglevel {{log_level}}
+port {{port}}
 tcp-keepalive {{tcp_keepalive}}
 timeout {{timeout}}
+dir {{redis_dir}}
+
+
