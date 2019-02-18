@@ -214,6 +214,8 @@ def create_redis_cluster():
 
     log(std_out)
 
+    sleep(1)
+
     charms.leadership.leader_set(cluster_node_ips=init_masters)
     charms.leadership.leader_set(cluster_created="true")
     charms.leadership.leader_set(
@@ -365,7 +367,7 @@ def rebalance_and_remove():
     """Rebalance and remove.
     Rebalance the node slots before removal.
     """
-    if is_flag_set('redis.cluster.joined'):
+    if is_flag_set('redis.cluster.joined') and not is_flag_set('redis.cluster.stopped'):
         nodes_info_json = charms.leadership.leader_get("cluster_nodes_json")
         nodes_info = json.loads(nodes_info_json)
         for node in nodes_info:
@@ -376,9 +378,13 @@ def rebalance_and_remove():
                            REDIS_CLI, node['node_ip'], node['node_id'])
                 out = check_output(cmd, shell=True)
                 log(out)
-                sleep(1)
-                # Remove node from cluster
-                cmd = "{} --cluster del-node {}:6379 {}".format(
-                    REDIS_CLI, node['node_ip'], node['node_id'])
-                out = check_output(cmd, shell=True)
-                log(out)
+                sleep(5)
+                try:
+                    # Remove node from cluster
+                    cmd = "{} --cluster del-node {}:6379 {}".format(
+                        REDIS_CLI, node['node_ip'], node['node_id'])
+                    out = check_output(cmd, shell=True)
+                    log(out)
+                except:
+                    pass
+        set_flag('redis.cluster.stopped')
