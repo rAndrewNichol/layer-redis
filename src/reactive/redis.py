@@ -95,38 +95,6 @@ def configure_system_for_redis():
     set_flag('redis.system.configured')
 
 
-@when('redis.cluster.enabled')
-@when_not('leadership.set.init_masters')
-@when_any('endpoint.cluster.peer.joined',
-          'endpoint.cluster.peer.changed')
-def ensure_sufficient_masters():
-    """Redis enforces us to use at minimum 3 master nodes.
-    Set leader flag indicating we have met the minimum # nodes.
-    """
-
-    if is_flag_set('endpoint.cluster.peer.joined'):
-        endpoint = 'endpoint.cluster.peer.joined'
-    elif is_flag_set('endpoint.cluster.peer.changed'):
-        endpoint = 'endpoint.cluster.peer.changed'
-    else:
-        status.blocked('No peer endpoint set')
-        return
-
-    # Get the peers, check for min length
-    peers = endpoint_from_flag(endpoint).all_units
-    peer_ips = [peer._data['private-address']
-                for peer in peers if peer._data is not None]
-    if len(peer_ips) > 1:
-        status.active(
-            "Minimum # masters available, got {}.".format(len(peer_ips)+1))
-        init_masters = \
-            ",".join(peer_ips + [unit_private_ip()])
-        charms.leadership.leader_set(init_masters=init_masters)
-
-    clear_flag('endpoint.cluster.peer.joined')
-    clear_flag('endpoint.cluster.peer.changed')
-
-
 @when('snap.installed.redis-bdx',
       'redis.system.configured',
       'redis.cluster.standalone.determined')
@@ -188,6 +156,38 @@ def set_redis_version():
     else:
         status.blocked("Cannot get redis-server version")
         return
+
+
+@when('redis.cluster.enabled')
+@when_not('leadership.set.init_masters')
+@when_any('endpoint.cluster.peer.joined',
+          'endpoint.cluster.peer.changed')
+def ensure_sufficient_masters():
+    """Redis enforces us to use at minimum 3 master nodes.
+    Set leader flag indicating we have met the minimum # nodes.
+    """
+
+    if is_flag_set('endpoint.cluster.peer.joined'):
+        endpoint = 'endpoint.cluster.peer.joined'
+    elif is_flag_set('endpoint.cluster.peer.changed'):
+        endpoint = 'endpoint.cluster.peer.changed'
+    else:
+        status.blocked('No peer endpoint set')
+        return
+
+    # Get the peers, check for min length
+    peers = endpoint_from_flag(endpoint).all_units
+    peer_ips = [peer._data['private-address']
+                for peer in peers if peer._data is not None]
+    if len(peer_ips) > 1:
+        status.active(
+            "Minimum # masters available, got {}.".format(len(peer_ips)+1))
+        init_masters = \
+            ",".join(peer_ips + [unit_private_ip()])
+        charms.leadership.leader_set(init_masters=init_masters)
+
+    clear_flag('endpoint.cluster.peer.joined')
+    clear_flag('endpoint.cluster.peer.changed')
 
 
 @when('redis.ready',
