@@ -7,6 +7,7 @@ from subprocess import (
     Popen,
     PIPE,
     STDOUT,
+    CalledProcessError,
 )
 
 from charms.reactive import (
@@ -367,7 +368,8 @@ def rebalance_and_remove():
     """Rebalance and remove.
     Rebalance the node slots before removal.
     """
-    if is_flag_set('redis.cluster.joined') and not is_flag_set('redis.cluster.stopped'):
+    if is_flag_set('redis.cluster.joined') and \
+       not is_flag_set('redis.cluster.stopped'):
         nodes_info_json = charms.leadership.leader_get("cluster_nodes_json")
         nodes_info = json.loads(nodes_info_json)
         for node in nodes_info:
@@ -385,6 +387,6 @@ def rebalance_and_remove():
                         REDIS_CLI, node['node_ip'], node['node_id'])
                     out = check_output(cmd, shell=True)
                     log(out)
-                except:
-                    pass
+                except CalledProcessError as e:
+                    log(e)
         set_flag('redis.cluster.stopped')
