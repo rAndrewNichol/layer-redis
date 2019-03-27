@@ -18,6 +18,9 @@ series:
 provides:
   redis:
     interface: redis
+peers:
+  cluster:
+    interface: "redis"
 resources:
   redis-bdx:
     type: file
