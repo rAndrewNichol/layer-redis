@@ -380,6 +380,7 @@ def rebalance_and_remove():
                            REDIS_CLI, node['node_ip'], node['node_id'])
                 out = check_output(cmd, shell=True)
                 log(out)
+                # TODO: Need to figure out a way to poll here.
                 sleep(5)
                 try:
                     # Remove node from cluster
