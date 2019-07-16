@@ -17,4 +17,6 @@ tcp-keepalive {{tcp_keepalive}}
 timeout {{timeout}}
 dir {{redis_dir}}
 
-
+{%- for extra_option in extra_options %}
+{{extra_option}}
+{%- endfor %}

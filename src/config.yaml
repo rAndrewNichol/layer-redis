@@ -1,3 +1,4 @@
+---
 options:
   port:
     type: int
@@ -44,3 +45,8 @@ options:
     default: false
     description: |
       Enable or disable redis-cluster. This config can only be set pre-deploy.
+  extra-options:
+    type: string
+    default: ""
+    description: |
+      Extra comma-separated options to be written to the redis config.

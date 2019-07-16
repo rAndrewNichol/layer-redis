@@ -116,6 +116,7 @@ def write_config_start_restart_redis():
             'log_level': config('log-level'),
             'tcp_keepalive': config('tcp-keepalive'),
             'timeout': config('timeout'),
+            'extra_options': config('extra-options').split(','),
             'redis_dir': REDIS_DIR}
 
     if config('cluster-enabled'):
