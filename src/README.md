@@ -7,7 +7,7 @@ This charm provides Redis Server. Redis is an open source (BSD licensed), in-mem
 Step by step instructions on using the charm:
 
 ```
-juju deploy redis
+juju deploy cs:~omnivector/redis
 ```
 
 ### metrics
@@ -25,14 +25,17 @@ redis/3	2017-09-27T21:15:09Z	      used_memory	508800
 
 ### Scale out Usage
 
+This charm supports redis-cluster. You can enable redis-cluster by setting the `cluster-enabled` config to `true`.
+```
+juju deploy cs:~omnivector/redis --config cluster-enabled=true
+```
 
-## Known Limitations and Issues
 
+#### Copyright
+* Omnivector Solutions (c) 2019 <info@omnivector.solutions>
 
-### Configuration
-
-
-### Contact Information
+#### License
+* AGPLv3 (see `LICENSE` file)
 
 
 ### Redis Info
