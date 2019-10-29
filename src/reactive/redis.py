@@ -2,7 +2,7 @@ from time import sleep
 import json
 
 from subprocess import (
-    call,
+    check_call,
     check_output,
     Popen,
     PIPE,
@@ -82,15 +82,19 @@ def configure_system_for_redis():
     """
 
     if not is_container():
-        with open('/etc/sysctl.conf', 'a') as f:
-            f.write("\nvm.overcommit_memory = 1")
-        call('sysctl vm.overcommit_memory=1'.split())
+        with open('/etc/sysctl.d/50-redis-charm.conf', 'w') as f:
+            f.write("vm.overcommit_memory = 1\n")
+            f.write("net.core.somaxconn = 4096")
+
+        # reload sysctl configs
+        check_call(["sysctl", "-p"])
+
+        with open("/etc/rc.local", "a") as f:
+            f.write(
+                "\necho never > /sys/kernel/mm/transparent_hugepage/enabled")
 
         with open('/sys/kernel/mm/transparent_hugepage/enabled', 'w') as f:
             f.write('never')
-
-        with open('/proc/sys/net/core/somaxconn', 'w') as f:
-            f.write('1024')
 
     set_flag('redis.system.configured')
 
