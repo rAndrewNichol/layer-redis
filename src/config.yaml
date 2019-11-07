@@ -12,7 +12,7 @@ options:
       commands.
   log-level:
     type: string
-    default: notice
+    default: warning
     description: |
       Specify the Redis server verbosity level. Choices are:
       - debug (a lot of information, useful for development/testing);
